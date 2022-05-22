@@ -1,0 +1,19 @@
+.info__profession {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 400;
+  margin: 16px 0 0;
+  align-self: start;
+  grid-area: profession;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 920px) {
+  .info__profession {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
+  }
+}

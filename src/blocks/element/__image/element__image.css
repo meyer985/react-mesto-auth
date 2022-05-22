@@ -1,0 +1,6 @@
+.element__image {
+  grid-column-start: span 2;
+  width: 282px;
+  height: 282px;
+  object-fit: cover;
+}
