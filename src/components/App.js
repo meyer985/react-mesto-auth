@@ -2,6 +2,7 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import React, { useState, useEffect } from "react";
+import { Route } from "react-router-dom";
 import ImagePopup from "./ImagePopup/ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -9,6 +10,7 @@ import EditProfilePopup from "./EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup/EditAvatarPopup";
 import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmationPopup";
+import Login from "./Login/Login";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -149,15 +151,21 @@ function App() {
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Main
-          handlerAvatar={handleEditAvatarClick}
-          handlerEdit={handleEditProfileClick}
-          handlerAdd={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleConfirmationDelete}
-          cardsArray={cards}
-        />
+        <Route exact path="/">
+          <Main
+            handlerAvatar={handleEditAvatarClick}
+            handlerEdit={handleEditProfileClick}
+            handlerAdd={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleConfirmationDelete}
+            cardsArray={cards}
+          />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+
         <Footer />
 
         <EditProfilePopup
