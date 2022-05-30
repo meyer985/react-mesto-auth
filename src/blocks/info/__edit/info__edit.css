@@ -1,0 +1,25 @@
+.info__edit {
+  height: 24px;
+  width: 24px;
+  border: 1px solid #ffffff;
+  box-sizing: border-box;
+  justify-self: flex-end;
+  align-self: end;
+  grid-area: edit;
+  background: none;
+  transition: .3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info__edit:hover {
+  opacity: .6;
+}
+
+@media screen and (max-width: 600px) {
+  .info__edit {
+    height: 18px;
+    width: 18px;
+  }
+}

@@ -1,0 +1,9 @@
+.info {
+  display: grid;
+  grid-template-columns: fit-content(420px) 42px;
+  grid-template-rows: 60px min-content;
+  max-width: 500px;
+  grid-template-areas:
+    "name edit"
+    "profession profession";
+}
