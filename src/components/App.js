@@ -11,6 +11,7 @@ import EditAvatarPopup from "./EditAvatarPopup/EditAvatarPopup";
 import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmationPopup";
 import Login from "./Login/Login";
+import Register from "./Register/Register";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -162,8 +163,11 @@ function App() {
             cardsArray={cards}
           />
         </Route>
-        <Route path="/login">
+        <Route path="/sign-in">
           <Login />
+        </Route>
+        <Route path="/sign-up">
+          <Register />
         </Route>
 
         <Footer />
