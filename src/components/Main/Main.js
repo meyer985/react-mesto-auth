@@ -3,6 +3,7 @@ import penBig from "../../images/pen_big.svg";
 import edit from "../../images/edit.png";
 import Card from "../Card/Card";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useHistory } from "react-router-dom";
 
 function Main({
   handlerAvatar,

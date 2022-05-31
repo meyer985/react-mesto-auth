@@ -21,7 +21,7 @@ function Login(props) {
       .auth(email, password)
       .then((data) => {
         if (data) {
-          props.handleLogin();
+          props.handleLogin(email);
           history.push("/");
         } else {
           console.log("не туть");

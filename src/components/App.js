@@ -25,9 +25,19 @@ function App() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
 
-  function handleLoggedIn() {
+  function handleLoggedIn(data) {
+    console.log(data);
     setIsLoggedIn(true);
+    setEmail(data);
+  }
+
+  function handleLogOut() {
+    setIsLoggedIn(false);
+    localStorage.removeItem("token");
+    history.push("/login");
+    setEmail("");
   }
 
   const history = useHistory();
@@ -37,12 +47,15 @@ function App() {
   useEffect(() => {
     checkToken(token)
       .then((data) => {
-        console.log(data);
-        handleLoggedIn();
-        history.push("/");
+        handleLoggedIn(data.data.email);
       })
+
       .catch((res) => console.log(res.status));
   }, []);
+
+  useEffect(() => {
+    history.push("/");
+  }, [isLoggedIn]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleClosebyEsc);
@@ -172,7 +185,7 @@ function App() {
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+        <Header email={email} logOut={handleLogOut} />
         <Switch>
           <ProtectedRoute
             exact
