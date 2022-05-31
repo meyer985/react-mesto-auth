@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import * as auth from "../../utils/auth";
+import RejectPopup from "../RejectPopup/RejectPopup";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,15 @@ function Register() {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    auth.register(email, password).then((res) => console.log(res));
+    auth.register(email, password)
+    .then((res) => {
+      if (res.status) {
+        return res.json();
+      } else {
+        return Promise.reject(res.status);
+      }
+    });
+    .then((res) => console.log(res));
     history.push("/login");
   }
 

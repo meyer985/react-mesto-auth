@@ -1,4 +1,5 @@
 export const baseUrl = "https://auth.nomoreparties.co";
+
 export function register(email, password) {
   return fetch(`${baseUrl}/signup`, {
     method: "POST",
@@ -7,12 +8,6 @@ export function register(email, password) {
       password: password,
       email: email,
     }),
-  }).then((res) => {
-    if (res.status) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
   });
 }
 

@@ -61,3 +61,20 @@
   color: white;
   text-decoration: none;
 }
+
+.popup__container_type_reject {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.reject_message {
+  color: black;
+  text-align: center;
+}
+
+.popup__reject {
+  width: 120px;
+  height: 120px;
+}

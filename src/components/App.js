@@ -14,11 +14,13 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import { checkToken } from "../utils/auth";
+import RejectPopup from "./RejectPopup/RejectPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddItemPopupOpen, setAddItemPopupOpen] = useState(false);
   const [isAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
+  const [isRejectPopupOpen, setRejectPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
   const [cards, setCards] = useState([]);
@@ -28,7 +30,6 @@ function App() {
   const [email, setEmail] = useState("");
 
   function handleLoggedIn(data) {
-    console.log(data);
     setIsLoggedIn(true);
     setEmail(data);
   }
@@ -122,12 +123,17 @@ function App() {
     setAddItemPopupOpen(true);
   }
 
+  function handleRejectPopupOpen() {
+    setRejectPopupOpen(true);
+  }
+
   function closeAllPopups() {
     setAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddItemPopupOpen(false);
     setDeletePopupOpen(false);
     setSelectedCard({});
+    setRejectPopupOpen(false);
   }
 
   function handleUpdateUser(userData) {
@@ -245,6 +251,7 @@ function App() {
         />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <RejectPopup isOpen={isRejectPopupOpen} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>
     </div>
   );
