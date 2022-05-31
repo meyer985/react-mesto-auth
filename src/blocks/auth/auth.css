@@ -19,6 +19,7 @@
   height: 50px;
   background-color: inherit;
   padding: 0;
+  color: white;
 }
 
 .auth__header {

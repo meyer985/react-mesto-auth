@@ -2,7 +2,7 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import React, { useState, useEffect } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import ImagePopup from "./ImagePopup/ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -12,6 +12,7 @@ import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmationPopup";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -22,6 +23,11 @@ function App() {
   const [cards, setCards] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  function handleLoggedIn() {
+    setIsLoggedIn(true);
+  }
 
   useEffect(() => {
     document.addEventListener("keydown", handleClosebyEsc);
@@ -152,8 +158,11 @@ function App() {
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Route exact path="/">
-          <Main
+        <Switch>
+          <ProtectedRoute
+            exact
+            path="/"
+            component={Main}
             handlerAvatar={handleEditAvatarClick}
             handlerEdit={handleEditProfileClick}
             handlerAdd={handleAddPlaceClick}
@@ -161,14 +170,21 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleConfirmationDelete}
             cardsArray={cards}
+            isLoggedIn={isLoggedIn}
           />
-        </Route>
-        <Route path="/sign-in">
-          <Login />
-        </Route>
-        <Route path="/sign-up">
-          <Register />
-        </Route>
+
+          <Route path="/login">
+            <Login handleLogin={handleLoggedIn} />
+          </Route>
+
+          <Route path="/register">
+            <Register />
+          </Route>
+
+          <Route path="/">
+            {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/login" />}
+          </Route>
+        </Switch>
 
         <Footer />
 
