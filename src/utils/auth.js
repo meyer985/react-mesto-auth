@@ -34,3 +34,15 @@ export function auth(email, password) {
     })
     .catch((err) => console.log(err));
 }
+
+export function checkToken(token) {
+  return fetch(`${baseUrl}/users/me `, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+}

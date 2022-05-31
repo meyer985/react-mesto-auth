@@ -2,7 +2,7 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import React, { useState, useEffect } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import ImagePopup from "./ImagePopup/ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -13,6 +13,7 @@ import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmatio
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import { checkToken } from "../utils/auth";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -28,6 +29,20 @@ function App() {
   function handleLoggedIn() {
     setIsLoggedIn(true);
   }
+
+  const history = useHistory();
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    checkToken(token)
+      .then((data) => {
+        console.log(data);
+        handleLoggedIn();
+        history.push("/");
+      })
+      .catch((res) => console.log(res.status));
+  }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleClosebyEsc);
