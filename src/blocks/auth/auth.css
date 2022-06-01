@@ -62,19 +62,19 @@
   text-decoration: none;
 }
 
-.popup__container_type_reject {
+.popup__container_type_alert {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.reject_message {
+.popup_message {
   color: black;
   text-align: center;
 }
 
-.popup__reject {
+.popup__alert {
   width: 120px;
   height: 120px;
 }
