@@ -15,12 +15,15 @@ import Register from "./Register/Register";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import { checkToken } from "../utils/auth";
 import RejectPopup from "./RejectPopup/RejectPopup";
+import SuccessPopup from "./SuccessPopup/SuccessPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddItemPopupOpen, setAddItemPopupOpen] = useState(false);
   const [isAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
   const [isRejectPopupOpen, setRejectPopupOpen] = useState(false);
+  const [isSuccessPopupOpen, setSuccessPopupOpen] = useState(false);
+
   const [selectedCard, setSelectedCard] = useState({});
 
   const [cards, setCards] = useState([]);
@@ -127,6 +130,11 @@ function App() {
     setRejectPopupOpen(true);
   }
 
+  function handleSuccessPopupOpen() {
+    console.log("success");
+    setSuccessPopupOpen(true);
+  }
+
   function closeAllPopups() {
     setAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
@@ -134,6 +142,7 @@ function App() {
     setDeletePopupOpen(false);
     setSelectedCard({});
     setRejectPopupOpen(false);
+    setSuccessPopupOpen(false);
   }
 
   function handleUpdateUser(userData) {
@@ -208,11 +217,17 @@ function App() {
           />
 
           <Route path="/login">
-            <Login handleLogin={handleLoggedIn} />
+            <Login
+              handleLogin={handleLoggedIn}
+              throwMistake={handleRejectPopupOpen}
+            />
           </Route>
 
           <Route path="/register">
-            <Register />
+            <Register
+              throwMistake={handleRejectPopupOpen}
+              throwSuccess={handleSuccessPopupOpen}
+            />
           </Route>
 
           <Route path="/">
@@ -251,7 +266,10 @@ function App() {
         />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
         <RejectPopup isOpen={isRejectPopupOpen} onClose={closeAllPopups} />
+
+        <SuccessPopup isOpen={isSuccessPopupOpen} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>
     </div>
   );

@@ -20,11 +20,12 @@ function Login(props) {
     auth
       .auth(email, password)
       .then((data) => {
+        console.log(data);
         if (data) {
           props.handleLogin(email);
           history.push("/");
         } else {
-          console.log("не туть");
+          props.throwMistake();
         }
       })
       .catch((err) => console.log(err));

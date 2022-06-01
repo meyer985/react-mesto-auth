@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import * as auth from "../../utils/auth";
-import RejectPopup from "../RejectPopup/RejectPopup";
 
-function Register() {
+function Register(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -18,16 +17,19 @@ function Register() {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    auth.register(email, password)
-    .then((res) => {
-      if (res.status) {
-        return res.json();
-      } else {
-        return Promise.reject(res.status);
-      }
-    });
-    .then((res) => console.log(res));
-    history.push("/login");
+    auth
+      .register(email, password)
+      .then((res) => {
+        if (res.ok) {
+          history.push("/login");
+          props.throwSuccess();
+          return res.json();
+        } else {
+          props.throwMistake();
+          return Promise.reject(res.status);
+        }
+      })
+      .then((res) => console.log(res));
   }
 
   return (
