@@ -15,7 +15,7 @@ function AlertPopup(props) {
     >
       <div className="popup__container popup__container_type_alert">
         <img src={props.picture} alt={props.alt} className="popup__alert" />
-        <h2 className="popup_message">{props.message}</h2>
+        <h2 className="popup__message">{props.message}</h2>
         <button
           onClick={props.onClose}
           type="button"

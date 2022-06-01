@@ -17,12 +17,12 @@ function Header(props) {
 
   return (
     <header className="header">
-      <a className="link" onClick={() => console.log(location)}>
+      <a className="link">
         <img className="logo" src={logo} alt="логотип" />
       </a>
       <div className="header__menu">
         <p className="header__email">{props.email}</p>
-        <Link className="header__link" onClick={hanleRedirect}>
+        <Link className="header__link" onClick={hanleRedirect} to="#">
           {location.pathname === "/"
             ? "Выйти"
             : location.pathname === "/register"

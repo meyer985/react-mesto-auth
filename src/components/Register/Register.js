@@ -23,13 +23,13 @@ function Register(props) {
         if (res.ok) {
           history.push("/login");
           props.throwSuccess();
-          return res.json();
+          setEmail("");
+          setPassword("");
         } else {
           props.throwMistake();
-          return Promise.reject(res.status);
         }
       })
-      .then((res) => console.log(res));
+      .catch((res) => console.log(res));
   }
 
   return (
@@ -58,7 +58,9 @@ function Register(props) {
           value="Зарегистрироваться"
         />
       </form>
-      <Link to="/login">Уже зарегистрированы? Войти</Link>
+      <Link className="auth__redirect" to="/login">
+        Уже зарегистрированы? Войти
+      </Link>
     </div>
   );
 }

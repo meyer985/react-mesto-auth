@@ -131,7 +131,6 @@ function App() {
   }
 
   function handleSuccessPopupOpen() {
-    console.log("success");
     setSuccessPopupOpen(true);
   }
 

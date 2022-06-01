@@ -1,6 +1,6 @@
-.auth {
-  margin: 60px auto 80px;
+.popup__container_type_alert {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
