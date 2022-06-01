@@ -13,7 +13,7 @@ import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmatio
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
-import { checkToken } from "../utils/auth";
+import { register, auth, checkToken } from "../utils/auth";
 import RejectPopup from "./RejectPopup/RejectPopup";
 import SuccessPopup from "./SuccessPopup/SuccessPopup";
 
@@ -23,14 +23,17 @@ function App() {
   const [isAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
   const [isRejectPopupOpen, setRejectPopupOpen] = useState(false);
   const [isSuccessPopupOpen, setSuccessPopupOpen] = useState(false);
-
   const [selectedCard, setSelectedCard] = useState({});
-
   const [cards, setCards] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [email, setEmail] = useState("");
+  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
+
+  const history = useHistory();
 
   function handleLoggedIn(data) {
     setIsLoggedIn(true);
@@ -44,8 +47,6 @@ function App() {
     setEmail("");
   }
 
-  const history = useHistory();
-
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -56,10 +57,6 @@ function App() {
 
       .catch((res) => console.log(res.status));
   }, []);
-
-  useEffect(() => {
-    history.push("/");
-  }, [isLoggedIn]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleClosebyEsc);
@@ -75,13 +72,24 @@ function App() {
   }
 
   useEffect(() => {
-    api
-      .getCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((res) => console.log(res.status));
-  }, []);
+    if (isLoggedIn) {
+      history.push("/");
+
+      api
+        .getCards()
+        .then((res) => {
+          setCards(res);
+        })
+        .catch((res) => console.log(res.status));
+
+      api
+        .getUserInfo()
+        .then((res) => {
+          setCurrentUser(res);
+        })
+        .catch((res) => console.log(res.status));
+    }
+  }, [isLoggedIn]);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -99,17 +107,6 @@ function App() {
       .catch((res) => console.log(res.status));
   }
 
-  const [currentUser, setCurrentUser] = useState({});
-
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((res) => console.log(res.status));
-  }, []);
-
   function handleCardClick(data) {
     setSelectedCard(data);
   }
@@ -124,14 +121,6 @@ function App() {
 
   function handleAddPlaceClick() {
     setAddItemPopupOpen(true);
-  }
-
-  function handleRejectPopupOpen() {
-    setRejectPopupOpen(true);
-  }
-
-  function handleSuccessPopupOpen() {
-    setSuccessPopupOpen(true);
   }
 
   function closeAllPopups() {
@@ -175,10 +164,6 @@ function App() {
 
   /* УДАЛЕНИЕ КАРТОЧКИ */
 
-  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
-
-  const [cardToDelete, setCardToDelete] = useState({});
-
   function handleConfirmationDelete(card) {
     setDeletePopupOpen(true);
     setCardToDelete(card);
@@ -194,6 +179,35 @@ function App() {
       .catch((res) => console.log(res.status))
       .finally(() => setIsLoading(false));
     closeAllPopups();
+  }
+
+  /*Регистрация и авторизация*/
+
+  function handleSubmitLogin(email, password) {
+    auth(email, password)
+      .then((data) => {
+        if (data) {
+          handleLoggedIn(email);
+          history.push("/");
+        } else {
+          setRejectPopupOpen(true);
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleSubmitRegister(email, password) {
+    register(email, password)
+      .then((res) => {
+        if (res.ok) {
+          history.push("/login");
+          setSuccessPopupOpen(true);
+          setIsRegistered(true);
+        } else {
+          setRejectPopupOpen(true);
+        }
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
@@ -218,14 +232,15 @@ function App() {
           <Route path="/login">
             <Login
               handleLogin={handleLoggedIn}
-              throwMistake={handleRejectPopupOpen}
+              handleSubmitLogin={handleSubmitLogin}
+              isLoggedIn={isLoggedIn}
             />
           </Route>
 
           <Route path="/register">
             <Register
-              throwMistake={handleRejectPopupOpen}
-              throwSuccess={handleSuccessPopupOpen}
+              handleSubmitRegister={handleSubmitRegister}
+              isRegistered={isRegistered}
             />
           </Route>
 

@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import * as auth from "../../utils/auth";
+import { Link } from "react-router-dom";
 
 function Register(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const history = useHistory();
 
   function handleInputEmail(evt) {
     setEmail(evt.target.value);
@@ -17,19 +15,11 @@ function Register(props) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    auth
-      .register(email, password)
-      .then((res) => {
-        if (res.ok) {
-          history.push("/login");
-          props.throwSuccess();
-          setEmail("");
-          setPassword("");
-        } else {
-          props.throwMistake();
-        }
-      })
-      .catch((err) => console.log(err));
+    props.handleSubmitRegister(email, password);
+    if (props.isRegistered) {
+      setEmail("");
+      setPassword("");
+    }
   }
 
   return (
@@ -46,7 +36,7 @@ function Register(props) {
         />
         <input
           name="password"
-          type="text"
+          type="password"
           className="auth__input auth__input_type_password"
           placeholder="Пароль"
           value={password}
