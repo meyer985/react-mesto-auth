@@ -2,7 +2,7 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import React, { useState, useEffect } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import ImagePopup from "./ImagePopup/ImagePopup";
 import api from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -12,16 +12,54 @@ import AddCardPopup from "./AddCardPopup/AddCardPopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup/DeleteConfirmationPopup";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import { checkToken } from "../utils/auth";
+import RejectPopup from "./RejectPopup/RejectPopup";
+import SuccessPopup from "./SuccessPopup/SuccessPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddItemPopupOpen, setAddItemPopupOpen] = useState(false);
   const [isAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
+  const [isRejectPopupOpen, setRejectPopupOpen] = useState(false);
+  const [isSuccessPopupOpen, setSuccessPopupOpen] = useState(false);
+
   const [selectedCard, setSelectedCard] = useState({});
 
   const [cards, setCards] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+
+  function handleLoggedIn(data) {
+    setIsLoggedIn(true);
+    setEmail(data);
+  }
+
+  function handleLogOut() {
+    setIsLoggedIn(false);
+    localStorage.removeItem("token");
+    history.push("/login");
+    setEmail("");
+  }
+
+  const history = useHistory();
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    checkToken(token)
+      .then((data) => {
+        handleLoggedIn(data.data.email);
+      })
+
+      .catch((res) => console.log(res.status));
+  }, []);
+
+  useEffect(() => {
+    history.push("/");
+  }, [isLoggedIn]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleClosebyEsc);
@@ -88,12 +126,22 @@ function App() {
     setAddItemPopupOpen(true);
   }
 
+  function handleRejectPopupOpen() {
+    setRejectPopupOpen(true);
+  }
+
+  function handleSuccessPopupOpen() {
+    setSuccessPopupOpen(true);
+  }
+
   function closeAllPopups() {
     setAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddItemPopupOpen(false);
     setDeletePopupOpen(false);
     setSelectedCard({});
+    setRejectPopupOpen(false);
+    setSuccessPopupOpen(false);
   }
 
   function handleUpdateUser(userData) {
@@ -151,9 +199,12 @@ function App() {
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Route exact path="/">
-          <Main
+        <Header email={email} logOut={handleLogOut} />
+        <Switch>
+          <ProtectedRoute
+            exact
+            path="/"
+            component={Main}
             handlerAvatar={handleEditAvatarClick}
             handlerEdit={handleEditProfileClick}
             handlerAdd={handleAddPlaceClick}
@@ -161,14 +212,27 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleConfirmationDelete}
             cardsArray={cards}
+            isLoggedIn={isLoggedIn}
           />
-        </Route>
-        <Route path="/sign-in">
-          <Login />
-        </Route>
-        <Route path="/sign-up">
-          <Register />
-        </Route>
+
+          <Route path="/login">
+            <Login
+              handleLogin={handleLoggedIn}
+              throwMistake={handleRejectPopupOpen}
+            />
+          </Route>
+
+          <Route path="/register">
+            <Register
+              throwMistake={handleRejectPopupOpen}
+              throwSuccess={handleSuccessPopupOpen}
+            />
+          </Route>
+
+          <Route path="/">
+            {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/login" />}
+          </Route>
+        </Switch>
 
         <Footer />
 
@@ -201,6 +265,10 @@ function App() {
         />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
+        <RejectPopup isOpen={isRejectPopupOpen} onClose={closeAllPopups} />
+
+        <SuccessPopup isOpen={isSuccessPopupOpen} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>
     </div>
   );
