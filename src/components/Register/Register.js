@@ -29,7 +29,7 @@ function Register(props) {
           props.throwMistake();
         }
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 
   return (
